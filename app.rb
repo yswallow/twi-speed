@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'twitter'
+require 'erb'
 
 $client = Twitter::REST::Client.new do |config|
   config.consumer_key =  ENV['CONSUMER_KEY']
@@ -18,5 +19,7 @@ get '/' do
     dt = tweets[0].created_at - tweets[-1].created_at
     $tpm = (tweets.size / dt) * 60
   end
-  "分速#{'%.2f' % $tpm}ツイート at #{$last_update}\n"
+  erb = ERB.new(File.read('./layout/home.erb'))
+#  "分速#{'%.2f' % $tpm}ツイート at #{$last_update}\n"
+  erb.result( binding )
 end
